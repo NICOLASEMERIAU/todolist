@@ -6,5 +6,8 @@ import './bootstrap.js';
  * which should already be in your base.html.twig.
  */
 import './styles/app.css';
+import './styles/bootstrap.min.css';
+import './styles/shop-homepage.css';
+import './styles/bootstrap.min.js';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
