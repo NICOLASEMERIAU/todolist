@@ -10,8 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/task')]
+#[IsGranted('ROLE_USER')]
 class TaskController extends AbstractController
 {
     #[Route('/', name: 'app_task_index', methods: ['GET'])]
@@ -67,6 +69,20 @@ class TaskController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/{id}/toggle', name: 'app_task_toggle', methods: ['GET', 'POST'])]
+    public function toggleTaskAction(Request $request, Task $task, EntityManagerInterface $entityManager): Response
+    {
+        $task->setIsDone('true');
+
+        $entityManager->persist($task);
+        $entityManager->flush();
+
+        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+
+        return $this->redirectToRoute('app_task_index');
+    }
+
 
     #[Route('/{id}', name: 'app_task_delete', methods: ['POST'])]
     public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
